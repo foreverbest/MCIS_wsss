@@ -21,9 +21,11 @@ from utils import AverageMeter
 from utils.LoadData import train_data_loader_siamese_more_augumentation
 from tqdm import trange, tqdm
 import random
+from torch.utils.tensorboard import SummaryWriter
 
 ROOT_DIR = '/'.join(os.getcwd().split('/')[:-1])
 print('Project Root Dir:', ROOT_DIR)
+writer = SummaryWriter('runs2/exp1_mcis/log',flush_secs=30)
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='The Pytorch code of OAA')
@@ -234,7 +236,10 @@ def train(args):
             label_new=torch.cat([label_new,label_new])
 
             # print(label1[0],label2[0],label_new[0])
+            #可视化
+            writer.add_images('img',img[0],global_counter,dataformats='NCHW')
             
+
             logits,co_logits = model(img, current_epoch, label, None)
             logits2,co_logits2 = model(img2, current_epoch, label, None)
             logits3,co_logits3 = model(img3, current_epoch, label, None)
@@ -326,6 +331,21 @@ def train(args):
                         current_epoch, global_counter%len(train_loader), len(train_loader), 
                         optimizer.param_groups[0]['lr'], loss=losses))
                 print(losses.avg, losses1.avg, losses2.avg, losses2_1.avg, losses2_2.avg,losses3_1.avg, losses3_2.avg,losses4_1.avg, losses4_2.avg,losses1_comple.avg,losses2_comple.avg)
+                
+                writer.add_scalar('train/overall',losses.avg, global_counter)
+                writer.add_scalars('train/detail',{
+                    'losses1':losses1.avg,
+                    'loses2':losses2.avg,
+                    'losses2_1':losses2_1.avg,
+                    'losses2_2':losses2_2.avg,
+                    'losses3_1':losses3_1.avg,
+                    'losses3_2':losses3_2.avg,
+                    'losses4_1':losses4_1.avg,
+                    'losses4_2':losses4_2.avg,
+                    'losses1_comple':losses1_comple.avg,
+                    'losses2_comple':losses2_comple.avg
+                },global_counter)
+                writer.add_scalar('val/loss',losses.val,global_counter)
 
         # if current_epoch == args.epoch-1:
         save_checkpoint(args,

@@ -44,7 +44,7 @@ def gen_gt(index):
     if not os.path.exists(bg_name):
         return
     img = cv2.imread(im_name)
-    sal = cv2.imread(bg_name, 0)
+    sal = cv2.imread(bg_name, 0)    #0--灰度
     height, width = sal.shape
     gt = np.zeros((21, height, width), dtype=np.float32)
     sal = np.array(sal, dtype=np.float32)
@@ -117,7 +117,7 @@ def gen_gt(index):
     out.save(out_name)
 
 ### Parallel Mode
-pool = multiprocessing.Pool(processes=20)
+pool = multiprocessing.Pool(processes=10)   #20
 pool.map(gen_gt, range(len(lines)))
 # pool.map(gen_gt, range(100))
 pool.close()

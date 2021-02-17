@@ -92,7 +92,7 @@ def save_feature_maps_all(last_featmaps_transforms_list, args, label_in,img_name
 
         maps_transforms=[last_featmaps_transform[l].cpu().data.numpy() for last_featmaps_transform in last_featmaps_transforms_list]
 
-        im_name = args.save_dir + img_name[0].split('/')[-1][:-4]
+        im_name = args.save_dir + img_name[0].split('\\')[-1][:-4]   #存储名称
         labels = label_in.long().numpy()[0]
         for i in range(int(args.num_classes)):
             if labels[i] == 1:

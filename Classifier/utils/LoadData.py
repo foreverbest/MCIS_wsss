@@ -181,7 +181,7 @@ def train_data_loader_siamese_more_augumentation(args, test_path=False, segmenta
     return train_loader, val_loader
 
 
-class VOCDataset_siamese_more_augumentation(Dataset):
+class VOCDataset_siamese_more_augumentation(Dataset):   #处理得到标注类向量、相同类的类向量
     def __init__(self, datalist_file, root_dir, num_classes=20, transform=None,more_transform=None, test=False):
         self.root_dir = root_dir
         self.testing = test
